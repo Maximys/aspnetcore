@@ -3,6 +3,9 @@ Microsoft.AspNetCore.Builder.RequestTimeoutsIApplicationBuilderExtensions
 Microsoft.AspNetCore.Builder.RequestTimeoutsIEndpointConventionBuilderExtensions
 Microsoft.AspNetCore.Http.BindingAddress.IsNamedPipe.get -> bool
 Microsoft.AspNetCore.Http.BindingAddress.NamedPipeName.get -> string!
+*REMOVED*Microsoft.AspNetCore.Http.Features.RequestCookiesFeature.RequestCookiesFeature(Microsoft.AspNetCore.Http.Features.IFeatureCollection! features) -> void
+*REMOVED*Microsoft.AspNetCore.Http.Features.RequestCookiesFeature.RequestCookiesFeature(Microsoft.AspNetCore.Http.IRequestCookieCollection! cookies) -> void
+Microsoft.AspNetCore.Http.Features.RequestCookiesFeature.RequestCookiesFeature(Microsoft.AspNetCore.Http.HttpContext! context) -> void
 Microsoft.AspNetCore.Http.Timeouts.DisableRequestTimeoutAttribute
 Microsoft.AspNetCore.Http.Timeouts.DisableRequestTimeoutAttribute.DisableRequestTimeoutAttribute() -> void
 Microsoft.AspNetCore.Http.Timeouts.IHttpRequestTimeoutFeature

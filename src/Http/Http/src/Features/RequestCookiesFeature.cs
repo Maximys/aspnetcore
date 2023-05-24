@@ -14,6 +14,7 @@ public class RequestCookiesFeature : IRequestCookiesFeature
     // Lambda hoisted to static readonly field to improve inlining https://github.com/dotnet/roslyn/issues/13624
     private static readonly Func<IFeatureCollection, IHttpRequestFeature?> _nullRequestFeature = f => null;
 
+    private readonly HttpContext _context;
     private FeatureReferences<IHttpRequestFeature> _features;
     private StringValues _original;
     private IRequestCookieCollection? _parsedValues;
@@ -21,23 +22,13 @@ public class RequestCookiesFeature : IRequestCookiesFeature
     /// <summary>
     /// Initializes a new instance of <see cref="RequestCookiesFeature"/>.
     /// </summary>
-    /// <param name="cookies">The <see cref="IRequestCookieCollection"/> to use as backing store.</param>
-    public RequestCookiesFeature(IRequestCookieCollection cookies)
+    /// <param name="context">The <see cref="HttpContext"/> to initialize.</param>
+    public RequestCookiesFeature(HttpContext context)
     {
-        ArgumentNullException.ThrowIfNull(cookies);
+        ArgumentNullException.ThrowIfNull(context);
 
-        _parsedValues = cookies;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of <see cref="RequestCookiesFeature"/>.
-    /// </summary>
-    /// <param name="features">The <see cref="IFeatureCollection"/> to initialize.</param>
-    public RequestCookiesFeature(IFeatureCollection features)
-    {
-        ArgumentNullException.ThrowIfNull(features);
-
-        _features.Initalize(features);
+        _context = context;
+        _features.Initalize(context.Features);
     }
 
     private IHttpRequestFeature HttpRequestFeature =>

@@ -16,7 +16,7 @@ internal sealed class DefaultHttpRequest : HttpRequest
     private static readonly Func<IFeatureCollection, IHttpRequestFeature?> _nullRequestFeature = f => null;
     private static readonly Func<IFeatureCollection, IQueryFeature?> _newQueryFeature = f => new QueryFeature(f);
     private static readonly Func<DefaultHttpRequest, IFormFeature> _newFormFeature = r => new FormFeature(r, r._context.FormOptions ?? FormOptions.Default);
-    private static readonly Func<IFeatureCollection, IRequestCookiesFeature> _newRequestCookiesFeature = f => new RequestCookiesFeature(f);
+    private static readonly Func<HttpContext, IRequestCookiesFeature> _newRequestCookiesFeature = context => new RequestCookiesFeature(context);
     private static readonly Func<IFeatureCollection, IRouteValuesFeature> _newRouteValuesFeature = f => new RouteValuesFeature();
     private static readonly Func<HttpContext, IRequestBodyPipeFeature> _newRequestBodyPipeFeature = context => new RequestBodyPipeFeature(context);
 
@@ -56,7 +56,7 @@ internal sealed class DefaultHttpRequest : HttpRequest
         _features.Fetch(ref _features.Cache.Form, this, _newFormFeature)!;
 
     private IRequestCookiesFeature RequestCookiesFeature =>
-        _features.Fetch(ref _features.Cache.Cookies, _newRequestCookiesFeature)!;
+        _features.Fetch(ref _features.Cache.Cookies, this.HttpContext, _newRequestCookiesFeature)!;
 
     private IRouteValuesFeature RouteValuesFeature =>
         _features.Fetch(ref _features.Cache.RouteValues, _newRouteValuesFeature)!;
