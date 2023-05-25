@@ -24,6 +24,8 @@ Microsoft.AspNetCore.Mvc.CreatedResult.CreatedResult(string? location, object? v
 Microsoft.AspNetCore.Mvc.CreatedResult.CreatedResult(System.Uri? location, object? value) -> void
 *REMOVED*Microsoft.AspNetCore.Mvc.CreatedResult.Location.get -> string!
 Microsoft.AspNetCore.Mvc.CreatedResult.Location.get -> string?
+static Microsoft.Extensions.DependencyInjection.MvcCoreMvcBuilderExtensions.ConfigureRequestOptions(this Microsoft.Extensions.DependencyInjection.IMvcBuilder! builder, System.Action<Microsoft.AspNetCore.Http.Requests.RequestOptions!>! setupAction) -> Microsoft.Extensions.DependencyInjection.IMvcBuilder!
+static Microsoft.Extensions.DependencyInjection.MvcCoreMvcCoreBuilderExtensions.ConfigureRequestOptions(this Microsoft.Extensions.DependencyInjection.IMvcCoreBuilder! builder, System.Action<Microsoft.AspNetCore.Http.Requests.RequestOptions!>! setupAction) -> Microsoft.Extensions.DependencyInjection.IMvcCoreBuilder!
 virtual Microsoft.AspNetCore.Mvc.ControllerBase.Created() -> Microsoft.AspNetCore.Mvc.CreatedResult!
 *REMOVED*virtual Microsoft.AspNetCore.Mvc.ControllerBase.Created(string! uri, object? value) -> Microsoft.AspNetCore.Mvc.CreatedResult!
 *REMOVED*virtual Microsoft.AspNetCore.Mvc.ControllerBase.Created(System.Uri! uri, object? value) -> Microsoft.AspNetCore.Mvc.CreatedResult!

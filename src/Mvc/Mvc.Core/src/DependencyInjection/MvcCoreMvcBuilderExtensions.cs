@@ -3,6 +3,7 @@
 
 using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Http.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -160,6 +161,24 @@ public static class MvcCoreMvcBuilderExtensions
     public static IMvcBuilder ConfigureApiBehaviorOptions(
         this IMvcBuilder builder,
         Action<ApiBehaviorOptions> setupAction)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(setupAction);
+
+        builder.Services.Configure(setupAction);
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Configures <see cref="RequestOptions"/>.
+    /// </summary>
+    /// <param name="builder">The <see cref="IMvcBuilder"/>.</param>
+    /// <param name="setupAction">The configure action.</param>
+    /// <returns>The <see cref="IMvcBuilder"/>.</returns>
+    public static IMvcBuilder ConfigureRequestOptions(
+        this IMvcBuilder builder,
+        Action<RequestOptions> setupAction)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(setupAction);

@@ -4,6 +4,7 @@
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -203,6 +204,24 @@ public static class MvcCoreMvcCoreBuilderExtensions
     public static IMvcCoreBuilder ConfigureApiBehaviorOptions(
         this IMvcCoreBuilder builder,
         Action<ApiBehaviorOptions> setupAction)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(setupAction);
+
+        builder.Services.Configure(setupAction);
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Configures <see cref="RequestOptions"/>.
+    /// </summary>
+    /// <param name="builder">The <see cref="IMvcCoreBuilder"/>.</param>
+    /// <param name="setupAction">The configure action.</param>
+    /// <returns>The <see cref="IMvcCoreBuilder"/>.</returns>
+    public static IMvcCoreBuilder ConfigureRequestOptions(
+        this IMvcCoreBuilder builder,
+        Action<RequestOptions> setupAction)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(setupAction);

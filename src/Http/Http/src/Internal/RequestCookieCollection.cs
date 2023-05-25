@@ -5,6 +5,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Microsoft.AspNetCore.Http.Requests;
 using Microsoft.AspNetCore.Internal;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
@@ -15,7 +16,7 @@ namespace Microsoft.AspNetCore.Http;
 [DebuggerTypeProxy(typeof(RequestCookieCollectionDebugView))]
 internal sealed class RequestCookieCollection : IRequestCookieCollection
 {
-    public static readonly RequestCookieCollection Empty = new RequestCookieCollection();
+    public static readonly RequestCookieCollection Empty = new RequestCookieCollection(RequestCookiesSettings.DefaultIsNameCaseInsensitive);
     private static readonly string[] EmptyKeys = Array.Empty<string>();
 
     // Pre-box
@@ -24,14 +25,16 @@ internal sealed class RequestCookieCollection : IRequestCookieCollection
 
     private AdaptiveCapacityDictionary<string, string> Store { get; set; }
 
-    public RequestCookieCollection()
+    public RequestCookieCollection(bool IsNameCaseInsensitive)
     {
-        Store = new AdaptiveCapacityDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-    }
-
-    public RequestCookieCollection(int capacity)
-    {
-        Store = new AdaptiveCapacityDictionary<string, string>(capacity, StringComparer.OrdinalIgnoreCase);
+        if (IsNameCaseInsensitive)
+        {
+            Store = new AdaptiveCapacityDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        }
+        else
+        {
+            Store = new AdaptiveCapacityDictionary<string, string>(StringComparer.Ordinal);
+        }
     }
 
     // For tests
@@ -59,7 +62,9 @@ internal sealed class RequestCookieCollection : IRequestCookieCollection
         }
     }
 
-    public static RequestCookieCollection Parse(StringValues values)
+    public static RequestCookieCollection Parse(
+        StringValues values,
+        bool isNameCaseInsensitive)
     {
         if (values.Count == 0)
         {
@@ -67,7 +72,7 @@ internal sealed class RequestCookieCollection : IRequestCookieCollection
         }
 
         // Do not set the collection capacity based on StringValues.Count, the Cookie header is supposed to be a single combined value.
-        var collection = new RequestCookieCollection();
+        var collection = new RequestCookieCollection(isNameCaseInsensitive);
         var store = collection.Store!;
 
         if (CookieHeaderParserShared.TryParseValues(values, store, supportsMultipleValues: true))

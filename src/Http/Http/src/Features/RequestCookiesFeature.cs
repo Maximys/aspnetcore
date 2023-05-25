@@ -1,6 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Microsoft.AspNetCore.Http.Requests;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
@@ -16,6 +19,7 @@ public class RequestCookiesFeature : IRequestCookiesFeature
 
     private readonly HttpContext _context;
     private FeatureReferences<IHttpRequestFeature> _features;
+    private readonly RequestCookiesSettings _options;
     private StringValues _original;
     private IRequestCookieCollection? _parsedValues;
 
@@ -26,9 +30,14 @@ public class RequestCookiesFeature : IRequestCookiesFeature
     public RequestCookiesFeature(HttpContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(context.RequestServices);
 
         _context = context;
-        _features.Initalize(context.Features);
+        _features.Initalize(_context.Features);
+        _options = _context.RequestServices
+            .GetRequiredService<IOptions<RequestOptions>>()
+            .Value
+            .CookiesSettings;
     }
 
     private IHttpRequestFeature HttpRequestFeature =>
@@ -54,7 +63,7 @@ public class RequestCookiesFeature : IRequestCookiesFeature
             if (_parsedValues == null || _original != current)
             {
                 _original = current;
-                _parsedValues = RequestCookieCollection.Parse(current);
+                _parsedValues = RequestCookieCollection.Parse(current, _options.IsNameCaseInsensitive);
             }
 
             return _parsedValues;

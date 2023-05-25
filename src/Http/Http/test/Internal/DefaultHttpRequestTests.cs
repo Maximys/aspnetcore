@@ -3,7 +3,9 @@
 
 using System.Globalization;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Http.Requests;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.AspNetCore.Http;
@@ -162,7 +164,15 @@ public class DefaultHttpRequestTests
     [Fact]
     public void Cookies_GetAndSet()
     {
-        var request = new DefaultHttpContext().Request;
+        var collections = new ServiceCollection();
+        collections.AddOptions<RequestOptions>();
+
+        var features = new FeatureCollection();
+        features.Set<IHttpRequestFeature>(new HttpRequestFeature());
+        features.Set<IServiceProvidersFeature>(new ServiceProvidersFeature() { RequestServices = collections.BuildServiceProvider() });
+
+        var context = new DefaultHttpContext(features);
+        var request = context.Request;
         var cookieHeaders = request.Headers["Cookie"];
         Assert.Empty(cookieHeaders);
         var cookies0 = request.Cookies;
@@ -173,7 +183,7 @@ public class DefaultHttpRequestTests
         var newCookies = new[] { "name0=value0%2C", "name1=value1" };
         request.Headers["Cookie"] = newCookies;
 
-        cookies0 = RequestCookieCollection.Parse(newCookies);
+        cookies0 = RequestCookieCollection.Parse(newCookies, RequestCookiesSettings.DefaultIsNameCaseInsensitive);
         var cookies1 = request.Cookies;
         Assert.Equal(cookies0, cookies1);
         Assert.Equal(2, cookies1.Count);

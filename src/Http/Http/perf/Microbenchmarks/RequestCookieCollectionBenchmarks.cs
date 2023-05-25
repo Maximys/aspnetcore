@@ -19,6 +19,6 @@ public class RequestCookieCollectionBenchmarks
     [Benchmark]
     public void Parse_TypicalCookie()
     {
-        _ = RequestCookieCollection.Parse(_cookie);
+        _ = RequestCookieCollection.Parse(_cookie, true);
     }
 }
